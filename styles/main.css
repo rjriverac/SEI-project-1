@@ -73,12 +73,19 @@ h2 {
 }
 
 #grid div {
-  outline: solid white 1px;
+  outline: solid #2de2e6 1px;
   /* flex-grow: 1; */
   min-width: 1px;
   min-height: 1px;
   height: 35px;
   width: 35px;
+  
+}
+
+
+.hasMainChar {
+  background-image: url(../assets/visual/mainchar.png);
+  background-position: center;
 }
 
 .game{
@@ -92,5 +99,13 @@ h2 {
 
 .wall {
   /* padding: 10px; */
-  background-color: white;
+  background-color: #d40078;
+}
+
+.borderwall {
+  background-color: #0d0611;
+}
+
+.notwall {
+  background-color: #023788;
 }
