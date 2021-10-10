@@ -66,9 +66,16 @@ function init () {
   const keyHandler = (e) => {
     removechar('hasMainChar',currentPlayerPosition)
     const key = e.keyCode
-    if (key === 39 && document.querySelector('#'+currentPlayerPosition+1).classList.contains('notwall')) {
-
+    if (key === 39 && document.getElementById(currentPlayerPosition + 1).classList.contains('notwall')) {
+      currentPlayerPosition++
+    } else if (key === 37 && document.getElementById(currentPlayerPosition - 1).classList.contains('notwall')) {
+      currentPlayerPosition--
+    } else if (key === 38 && document.getElementById(currentPlayerPosition - 20).classList.contains('notwall')) {
+      currentPlayerPosition -= 20
+    } else if (key === 40 && document.getElementById(currentPlayerPosition + 20).classList.contains('notwall')) {
+      currentPlayerPosition += 20
     }
+    placechar('hasMainChar',currentPlayerPosition)
   }
 
   const initiate = () => {
@@ -80,7 +87,7 @@ function init () {
     document.querySelector('.game').style.flexDirection = 'column'
     document.querySelector('body').style.backgroundColor = '#261447'
     createGrid(height * width)
-    playAudio('./assets/sounds/Miami.mp3')
+    playAudio('./assets/sounds/hydrogen.mp3')
   }
 
 
