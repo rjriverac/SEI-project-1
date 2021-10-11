@@ -21,7 +21,19 @@ function init () {
   let score = 0
   let currentPlayerPosition = 306
 
+  const gridArray = []
 
+  const initiate = () => {
+    startscreen.style.display = 'none'
+    document.querySelector('.grid-wrapper').setAttribute('style','display: flex')
+    height = 20
+    width = 20
+    document.querySelector('.game').style.display = 'flex'
+    document.querySelector('.game').style.flexDirection = 'column'
+    document.querySelector('body').style.backgroundColor = '#261447'
+    createGrid(height * width)
+    playAudio('./assets/sounds/hydrogen.mp3')
+  }
   const createGrid = (numCells) => {
     for (let i = 0; i < numCells; i++) {
       const cell = document.createElement('div')
@@ -29,8 +41,10 @@ function init () {
       cells.push(cell)
       cell.id = i
     }
-    // level++
 
+
+    //! create 2d array
+    // level++
     createLevel()
   }
 
@@ -50,10 +64,36 @@ function init () {
         cell.classList.add('wall')
       } else if ([189,190,209,210,201,202,203,216,217,218,212,213,214,205,206,207].includes(parseFloat(cell.id))) {
         cell.classList.add('wall')
-      } else cell.classList.add('notwall')
+      } else {
+        cell.classList.add('notwall')
+        cell.classList.add()
+      }
     })
+    // arrayCreator(thegrid)
+    createCoords(thegrid)
+    placechar('hasMainChar',currentPlayerPosition)
     window.addEventListener('keydown',keyHandler)
   }
+
+  // const arrayCreator = () => {
+  //   for (let i = 0; i < height; i++) {
+  //     gridArray[i] = []
+  //     for (let j = 0; j < width; j++) {
+  //       gridArray[i].push(j)
+  //     }
+  //   }
+  // }
+
+  const createCoords = () => {
+    for (let i = 0; i <= cells.length; i++) {
+      const row = Math.floor(i / 20)
+      const col = i % 20
+      console.log(i,row,col)
+      gridArray.push([row, col])
+    }
+    console.log(gridArray)
+  }
+
 
   const placechar = (which,position) => {
     cells[position].classList.add(which)
@@ -64,6 +104,7 @@ function init () {
   }
 
   const keyHandler = (e) => {
+    // store time each keypress occurred, run an if/statement comparing to current time to limit speed of this function
     removechar('hasMainChar',currentPlayerPosition)
     const key = e.keyCode
     if (key === 39 && document.getElementById(currentPlayerPosition + 1).classList.contains('notwall')) {
@@ -78,23 +119,13 @@ function init () {
     placechar('hasMainChar',currentPlayerPosition)
   }
 
-  const initiate = () => {
-    startscreen.style.display = 'none'
-    document.querySelector('.grid-wrapper').setAttribute('style','display: flex')
-    height = 20
-    width = 20
-    document.querySelector('.game').style.display = 'flex'
-    document.querySelector('.game').style.flexDirection = 'column'
-    document.querySelector('body').style.backgroundColor = '#261447'
-    createGrid(height * width)
-    playAudio('./assets/sounds/hydrogen.mp3')
-  }
+
 
 
   startbutton.addEventListener('click',initiate)
 
   const playAudio = (inputsrc) => {
-    audio.src = inputsrc
+    // audio.src = inputsrc
     audio.play()
   }  
   // document.querySelector('.startpage').addEventListener('mouseenter',playAudio('./assets/sounds/Miami.mp3'))
