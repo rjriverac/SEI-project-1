@@ -123,9 +123,7 @@ function init () {
       currentPlayerPosition += 20
     }
     placechar('hasMainChar',currentPlayerPosition)
-    // console.log(gridArray[currentPlayerPosition])
     checkSpace(document.getElementById(currentPlayerPosition))
-    console.log(ghostMove('marty',currentPlayerPosition))
   }
 
   const checkSpace = (inputSpace) => {
@@ -135,7 +133,6 @@ function init () {
     } else if (inputSpace.classList.contains('food')) {
       inputSpace.classList.remove('food')
       score += 100
-      // console.log(score)
     }
   }
 
@@ -149,8 +146,6 @@ function init () {
       return document.getElementById(item).classList.contains('notwall')
     })
     const nextMove = realMoves.reduce((acc,num) => {
-      console.log('input',acc,num)
-      console.log('x1, x2->',gridArray[num][0])
       const x1 = gridArray[num][0]
       const x2 = gridArray[currentPlayerPosition][0]
       const y1 = gridArray[num][1]
