@@ -1,8 +1,15 @@
 function init () {
-
+  let gameOn = true
   // class sprite {
   //   constructor(type, image) {
   //     this.type = type
+  //     this.image = image
+  //   }
+  // }
+
+  // class ghost {
+  //   constructor(startpos,image) {
+  //     this.startpos = startpos
   //     this.image = image
   //   }
   // }
@@ -19,8 +26,9 @@ function init () {
   const startscreen = document.querySelector('.startpage')
   const startbutton = document.querySelector('#start p')
   let score = 0
-  let currentPlayerPosition = 306
+  let currentPlayerPosition = 229
   const gridArray = []
+
 
   const initiate = () => {
     startscreen.style.display = 'none'
@@ -62,23 +70,23 @@ function init () {
         cell.classList.add('wall')
       } else {
         cell.classList.add('notwall')
-        cell.classList.add()
+        cell.classList.add('food')
       }
     })
-    // arrayCreator(thegrid)
+
+    cells.map((cell) => {
+      const blanks = ['229','84','95','315','304']
+      if (blanks.some((item) => cell.id === item)){
+        cell.classList.remove('food')
+      }
+    })
+
     createCoords(thegrid)
     placechar('hasMainChar',currentPlayerPosition)
+    placechar('marty', 170)
     window.addEventListener('keydown',keyHandler)
   }
 
-  // const arrayCreator = () => {
-  //   for (let i = 0; i < height; i++) {
-  //     gridArray[i] = []
-  //     for (let j = 0; j < width; j++) {
-  //       gridArray[i].push(j)
-  //     }
-  //   }
-  // }
 
   const createCoords = () => {
     for (let i = 0; i <= cells.length; i++) {
@@ -99,8 +107,9 @@ function init () {
 
   const keyHandler = (e) => {
     // store time each keypress occurred, run an if/statement comparing to current time to limit speed of this function
+
+    //! maybe run movement on an interval and change direction using keys
     removechar('hasMainChar',currentPlayerPosition)
-    console.log(canRun)
     const key = e.keyCode
     if (key === 39 && document.getElementById(currentPlayerPosition + 1).classList.contains('notwall')) {
       currentPlayerPosition++
@@ -113,8 +122,19 @@ function init () {
     }
     placechar('hasMainChar',currentPlayerPosition)
     
+    checkSpace(document.getElementById(currentPlayerPosition))
   }
 
+  const checkSpace = (inputSpace) => {
+    const ghostNames = ['marty', 'willem', 'clyde', 'oscar']
+    if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
+      gameOn = window.confirm(`Game over: score ${score} \n Play again?`)
+    } else if (inputSpace.classList.contains('food')) {
+      inputSpace.classList.remove('food')
+      score += 100
+      console.log(score)
+    }
+  }
 
 
 
