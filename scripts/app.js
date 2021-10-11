@@ -1,5 +1,5 @@
 function init () {
-  let gameOn = true
+  
   // class sprite {
   //   constructor(type, image) {
   //     this.type = type
@@ -28,6 +28,8 @@ function init () {
   let score = 0
   let currentPlayerPosition = 229
   const gridArray = []
+  let moveInterval
+  let gameOn = true
 
 
   const initiate = () => {
@@ -121,8 +123,9 @@ function init () {
       currentPlayerPosition += 20
     }
     placechar('hasMainChar',currentPlayerPosition)
-    
+    // console.log(gridArray[currentPlayerPosition])
     checkSpace(document.getElementById(currentPlayerPosition))
+    console.log(ghostMove('marty',currentPlayerPosition))
   }
 
   const checkSpace = (inputSpace) => {
@@ -132,10 +135,38 @@ function init () {
     } else if (inputSpace.classList.contains('food')) {
       inputSpace.classList.remove('food')
       score += 100
-      console.log(score)
+      // console.log(score)
     }
   }
 
+  const ghostMove = (nameOfGhost,currentPlayerPosition) => {
+    
+
+    const currentPosition = document.querySelector('.' + nameOfGhost)
+    removechar(nameOfGhost,currentPosition.id)
+    const possibleMoves = [parseFloat(currentPosition.id) - 20, parseFloat(currentPosition.id) + 1,parseFloat(currentPosition.id) - 1, parseFloat(currentPosition.id) + 20].sort()
+    const realMoves = possibleMoves.filter((item) => {
+      return document.getElementById(item).classList.contains('notwall')
+    })
+    const nextMove = realMoves.reduce((acc,num) => {
+      console.log('input',acc,num)
+      console.log('x1, x2->',gridArray[num][0])
+      const x1 = gridArray[num][0]
+      const x2 = gridArray[currentPlayerPosition][0]
+      const y1 = gridArray[num][1]
+      const y2 = gridArray[currentPlayerPosition][1]
+      const distance = Math.hypot(x1 - x2,y1 - y2)
+      acc.push([distance,num])
+      return acc.sort((a,b) =>{
+        if (a[0] === b[0]) {
+          return 0
+        } else {
+          return (a[0] < b[0]) ? -1 : 1
+        }
+      })
+    },[])
+    placechar(nameOfGhost,nextMove[0][1])
+  }
 
 
   startbutton.addEventListener('click',initiate)
