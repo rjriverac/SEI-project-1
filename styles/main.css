@@ -88,6 +88,23 @@ h2 {
   background-position: center;
 }
 
+/*might be best to change image to facing left/right/down/up rather than rotate OR z-index & transform */
+.marty {
+
+}
+
+.daryl {
+
+}
+
+.willem {
+
+}
+
+.clyde {
+
+}
+
 .game{
   display: none;
 }

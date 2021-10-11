@@ -20,7 +20,6 @@ function init () {
   const startbutton = document.querySelector('#start p')
   let score = 0
   let currentPlayerPosition = 306
-
   const gridArray = []
 
   const initiate = () => {
@@ -41,9 +40,6 @@ function init () {
       cells.push(cell)
       cell.id = i
     }
-
-
-    //! create 2d array
     // level++
     createLevel()
   }
@@ -88,10 +84,8 @@ function init () {
     for (let i = 0; i <= cells.length; i++) {
       const row = Math.floor(i / 20)
       const col = i % 20
-      console.log(i,row,col)
       gridArray.push([row, col])
     }
-    console.log(gridArray)
   }
 
 
@@ -106,6 +100,7 @@ function init () {
   const keyHandler = (e) => {
     // store time each keypress occurred, run an if/statement comparing to current time to limit speed of this function
     removechar('hasMainChar',currentPlayerPosition)
+    console.log(canRun)
     const key = e.keyCode
     if (key === 39 && document.getElementById(currentPlayerPosition + 1).classList.contains('notwall')) {
       currentPlayerPosition++
@@ -117,6 +112,7 @@ function init () {
       currentPlayerPosition += 20
     }
     placechar('hasMainChar',currentPlayerPosition)
+    
   }
 
 
