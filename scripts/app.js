@@ -18,7 +18,7 @@ function init () {
   let gameOn = true
   const ghostStates = ['chase','panic','scatter']
   let currentState = ghostStates[0]
-  let delayFactor = 200
+  let delayFactor = 350
 
 
   const initiate = () => {
@@ -69,7 +69,6 @@ function init () {
       const blanks = ['229','84','95','315','304','35','24','378','361']
       if (blanks.some((item) => cell.id === item)){
         cell.classList.remove('food')
-        console.log(blanks.slice(1,5).some((item)=> cell.id === item))
       } 
       if (blanks.slice(1,5).some((item) => cell.id === item)){
         cell.classList.add('powerup')
@@ -125,11 +124,8 @@ function init () {
   }
 
   const moveInterval = ()=> {
-    console.log('started')
     let counter = 0
     myInterval = setInterval(()=> {
-      console.log('playerDirection->',playerDirection)
-      console.log('currentPlayerPos->',currentPlayerPosition)
       if (currentPlayerPosition === 199 && playerDirection === 'right') {
         removechar('hasMainChar',currentPlayerPosition)
         currentPlayerPosition -= 19
@@ -166,10 +162,11 @@ function init () {
         } else {
           counter = 0
           currentState = ghostStates[0]
-          delayFactor = 200
+          delayFactor = 400
         }
       }
-    },500)
+      getAndMoveGhosts()
+    },300)
   }
 
   const getAndMoveGhosts = () => {
@@ -197,6 +194,7 @@ function init () {
         while (!gameOn) {
           gameOn = true
           currentPlayerPosition = 229
+          cells.map((cell)=> cell.classList = '')
           createLevel()
         }
       }
