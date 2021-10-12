@@ -18,6 +18,7 @@ function init () {
   let gameOn = true
   const ghostStates = ['chase','panic','scatter']
   let currentState = ghostStates[0]
+  let delayFactor = 200
 
 
   const initiate = () => {
@@ -65,15 +66,23 @@ function init () {
     })
 
     cells.map((cell) => {
-      const blanks = ['229','84','95','315','304']
+      const blanks = ['229','84','95','315','304','35','24','378','361']
       if (blanks.some((item) => cell.id === item)){
         cell.classList.remove('food')
+        console.log(blanks.slice(1,5).some((item)=> cell.id === item))
+      } 
+      if (blanks.slice(1,5).some((item) => cell.id === item)){
+        cell.classList.add('powerup')
       }
     })
 
     createCoords(thegrid)
     placechar('hasMainChar',currentPlayerPosition)
-    placechar('marty', 170)
+    placechar('marty', 24)
+    placechar('willem',35)
+    placechar('clyde',378)
+    placechar('rasmus',361)
+
 
     window.addEventListener('keydown',setDirection)
     setTimeout(()=> moveInterval(),5000)
@@ -117,16 +126,20 @@ function init () {
 
   const moveInterval = ()=> {
     console.log('started')
+    let counter = 0
     myInterval = setInterval(()=> {
-      console.log(playerDirection)
-      if (currentPlayerPosition === 199) {
+      console.log('playerDirection->',playerDirection)
+      console.log('currentPlayerPos->',currentPlayerPosition)
+      if (currentPlayerPosition === 199 && playerDirection === 'right') {
         removechar('hasMainChar',currentPlayerPosition)
-        currentPlayerPosition - 19
+        currentPlayerPosition -= 19
         placechar('hasMainChar',currentPlayerPosition)
-      } else if (currentPlayerPosition === 180) {
+        checkSpace(document.getElementById(currentPlayerPosition))
+      } else if (currentPlayerPosition === 180 && playerDirection === 'left') {
         removechar('hasMainChar',currentPlayerPosition)
-        currentPlayerPosition + 19
+        currentPlayerPosition += 19
         placechar('hasMainChar',currentPlayerPosition)
+        checkSpace(document.getElementById(currentPlayerPosition))
       } else {
         removechar('hasMainChar',currentPlayerPosition)
         switch (playerDirection) {
@@ -146,9 +159,23 @@ function init () {
         placechar('hasMainChar',currentPlayerPosition)
         checkSpace(document.getElementById(currentPlayerPosition))
       }
+      if (currentState === ghostStates[1]) {
+        
+        if (counter < 40){
+          counter++
+        } else {
+          counter = 0
+          currentState = ghostStates[0]
+          delayFactor = 200
+        }
+      }
     },500)
   }
 
+  const getAndMoveGhosts = () => {
+    const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
+    ghostNames.forEach((name) => setTimeout((ghostMove(name,currentPlayerPosition)),delayFactor))
+  }
 
 
   const checkSpace = (inputSpace) => {
@@ -156,12 +183,13 @@ function init () {
 
     if (inputSpace.classList.contains('powerup')){
       currentState = ghostStates[1]
+      delayFactor = 250
     } else if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
       if (currentState === ghostStates[1]) {
         const thisGhost = ghostNames.filter(name => inputSpace.classList.contains(name)).join('')
         removechar(thisGhost,currentPlayerPosition)
         score += 500
-        setTimeout(()=> placechar(thisGhost,169),1000)
+        setTimeout(()=> placechar(thisGhost,169),10000)
       } else {
         clearInterval(myInterval)
         removechar('hasMainChar',currentPlayerPosition)
