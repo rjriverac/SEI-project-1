@@ -88,6 +88,12 @@ h2 {
   background-size:contain;
 }
 
+.powerup {
+  background-image: url(../assets/visual/powerup.gif);
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
 
 .hasMainChar {
   background-image: url(../assets/visual/mainchar.png);

@@ -149,29 +149,29 @@ function init () {
     },500)
   }
 
-  // const keyHandler = (e) => {
-  //   // store time each keypress occurred, run an if/statement comparing to current time to limit speed of this function
 
-  //   //! maybe run movement on an interval and change direction using keys
-  //   removechar('hasMainChar',currentPlayerPosition)
-  //   const key = e.keyCode
-  //   if (key === 39 && document.getElementById(currentPlayerPosition + 1).classList.contains('notwall')) {
-  //     currentPlayerPosition++
-  //   } else if (key === 37 && document.getElementById(currentPlayerPosition - 1).classList.contains('notwall')) {
-  //     currentPlayerPosition--
-  //   } else if (key === 38 && document.getElementById(currentPlayerPosition - 20).classList.contains('notwall')) {
-  //     currentPlayerPosition -= 20
-  //   } else if (key === 40 && document.getElementById(currentPlayerPosition + 20).classList.contains('notwall')) {
-  //     currentPlayerPosition += 20
-  //   }
-  //   placechar('hasMainChar',currentPlayerPosition)
-  //   checkSpace(document.getElementById(currentPlayerPosition))
-  // }
 
   const checkSpace = (inputSpace) => {
     const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
-    if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
-      gameOn = window.confirm(`Game over: score ${score} \n Play again?`)
+
+    if (inputSpace.classList.contains('powerup')){
+      currentState = ghostStates[1]
+    } else if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
+      if (currentState === ghostStates[1]) {
+        const thisGhost = ghostNames.filter(name => inputSpace.classList.contains(name)).join('')
+        removechar(thisGhost,currentPlayerPosition)
+        score += 500
+        setTimeout(()=> placechar(thisGhost,169),1000)
+      } else {
+        clearInterval(myInterval)
+        removechar('hasMainChar',currentPlayerPosition)
+        gameOn = !window.confirm(`Game over: score ${score} \n Play again?`)
+        while (!gameOn) {
+          gameOn = true
+          currentPlayerPosition = 229
+          createLevel()
+        }
+      }
     } else if (inputSpace.classList.contains('food')) {
       inputSpace.classList.remove('food')
       score += 100
@@ -209,7 +209,7 @@ function init () {
         moveSelect = nextMove[nextMove.length - 1][1]
         break
       case 'scatter':
-        moveSelect = nextMove[Math.floor(Math.random * nextMove.length - 1)][1]
+        moveSelect = nextMove[Math.floor(Math.random() * nextMove.length)][1]
         break
     }
     placechar(nameOfGhost,moveSelect)
