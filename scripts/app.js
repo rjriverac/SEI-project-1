@@ -164,7 +164,7 @@ function init () {
           currentState = ghostStates[0]
           delayFactor = 400
         }
-      }
+      } 
       getAndMoveGhosts()
     },300)
   }
