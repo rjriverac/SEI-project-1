@@ -18,7 +18,7 @@ function init () {
   let gameOn = true
   const ghostStates = ['chase','panic','scatter']
   let currentState = ghostStates[0]
-  let delayFactor = 350
+  let delayFactor = 400
 
 
   const initiate = () => {
@@ -84,7 +84,7 @@ function init () {
 
 
     window.addEventListener('keydown',setDirection)
-    setTimeout(()=> moveInterval(),5000)
+    setTimeout(moveInterval,5000)
   }
 
 
@@ -171,7 +171,7 @@ function init () {
 
   const getAndMoveGhosts = () => {
     const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
-    ghostNames.forEach((name) => setTimeout((ghostMove(name,currentPlayerPosition)),delayFactor))
+    ghostNames.forEach((name) => setTimeout(() => ghostMove(name,currentPlayerPosition),delayFactor))
   }
 
 
@@ -180,7 +180,7 @@ function init () {
 
     if (inputSpace.classList.contains('powerup')){
       currentState = ghostStates[1]
-      delayFactor = 250
+      delayFactor = 650
     } else if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
       if (currentState === ghostStates[1]) {
         const thisGhost = ghostNames.filter(name => inputSpace.classList.contains(name)).join('')
@@ -194,7 +194,7 @@ function init () {
         while (!gameOn) {
           gameOn = true
           currentPlayerPosition = 229
-          cells.map((cell)=> cell.classList = '')
+          cells.map((cell) => cell.classList = '')
           createLevel()
         }
       }
