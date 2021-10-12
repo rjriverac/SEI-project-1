@@ -1,19 +1,4 @@
 function init () {
-  
-  // class sprite {
-  //   constructor(type, image) {
-  //     this.type = type
-  //     this.image = image
-  //   }
-  // }
-
-  // class ghost {
-  //   constructor(startpos,image) {
-  //     this.startpos = startpos
-  //     this.image = image
-  //   }
-  // }
-
 
   const thegrid = document.querySelector('#grid')
   let height = 0
@@ -28,8 +13,11 @@ function init () {
   let score = 0
   let currentPlayerPosition = 229
   const gridArray = []
-  let moveInterval
+  let playerDirection = 230
+  let myInterval
   let gameOn = true
+  const ghostStates = ['chase','panic','scatter']
+  let currentState = ghostStates[0]
 
 
   const initiate = () => {
@@ -86,7 +74,9 @@ function init () {
     createCoords(thegrid)
     placechar('hasMainChar',currentPlayerPosition)
     placechar('marty', 170)
-    window.addEventListener('keydown',keyHandler)
+
+    window.addEventListener('keydown',setDirection)
+    setTimeout(()=> moveInterval(),5000)
   }
 
 
@@ -107,27 +97,79 @@ function init () {
     cells[position].classList.remove(which)
   }
 
-  const keyHandler = (e) => {
-    // store time each keypress occurred, run an if/statement comparing to current time to limit speed of this function
-
-    //! maybe run movement on an interval and change direction using keys
-    removechar('hasMainChar',currentPlayerPosition)
+  const setDirection = (e) => {
     const key = e.keyCode
-    if (key === 39 && document.getElementById(currentPlayerPosition + 1).classList.contains('notwall')) {
-      currentPlayerPosition++
-    } else if (key === 37 && document.getElementById(currentPlayerPosition - 1).classList.contains('notwall')) {
-      currentPlayerPosition--
-    } else if (key === 38 && document.getElementById(currentPlayerPosition - 20).classList.contains('notwall')) {
-      currentPlayerPosition -= 20
-    } else if (key === 40 && document.getElementById(currentPlayerPosition + 20).classList.contains('notwall')) {
-      currentPlayerPosition += 20
+    switch (key) {
+      case 39:
+        playerDirection = 'right'
+        break
+      case 37:
+        playerDirection = 'left'
+        break
+      case 38:
+        playerDirection = 'up'
+        break
+      case 40:
+        playerDirection = 'down'
+        break
     }
-    placechar('hasMainChar',currentPlayerPosition)
-    checkSpace(document.getElementById(currentPlayerPosition))
   }
 
+  const moveInterval = ()=> {
+    console.log('started')
+    myInterval = setInterval(()=> {
+      console.log(playerDirection)
+      if (currentPlayerPosition === 199) {
+        removechar('hasMainChar',currentPlayerPosition)
+        currentPlayerPosition - 19
+        placechar('hasMainChar',currentPlayerPosition)
+      } else if (currentPlayerPosition === 180) {
+        removechar('hasMainChar',currentPlayerPosition)
+        currentPlayerPosition + 19
+        placechar('hasMainChar',currentPlayerPosition)
+      } else {
+        removechar('hasMainChar',currentPlayerPosition)
+        switch (playerDirection) {
+          case 'right':
+            if (document.getElementById(currentPlayerPosition + 1).classList.contains('notwall')) currentPlayerPosition++
+            break
+          case 'left':
+            if (document.getElementById(currentPlayerPosition - 1).classList.contains('notwall')) currentPlayerPosition--
+            break
+          case 'up':
+            if (document.getElementById(currentPlayerPosition - 20).classList.contains('notwall')) currentPlayerPosition -= 20
+            break
+          case 'down':
+            if (document.getElementById(currentPlayerPosition + 20).classList.contains('notwall')) currentPlayerPosition += 20
+            break
+        }
+        placechar('hasMainChar',currentPlayerPosition)
+        checkSpace(document.getElementById(currentPlayerPosition))
+      }
+    },500)
+  }
+
+  // const keyHandler = (e) => {
+  //   // store time each keypress occurred, run an if/statement comparing to current time to limit speed of this function
+
+  //   //! maybe run movement on an interval and change direction using keys
+  //   removechar('hasMainChar',currentPlayerPosition)
+  //   const key = e.keyCode
+  //   if (key === 39 && document.getElementById(currentPlayerPosition + 1).classList.contains('notwall')) {
+  //     currentPlayerPosition++
+  //   } else if (key === 37 && document.getElementById(currentPlayerPosition - 1).classList.contains('notwall')) {
+  //     currentPlayerPosition--
+  //   } else if (key === 38 && document.getElementById(currentPlayerPosition - 20).classList.contains('notwall')) {
+  //     currentPlayerPosition -= 20
+  //   } else if (key === 40 && document.getElementById(currentPlayerPosition + 20).classList.contains('notwall')) {
+  //     currentPlayerPosition += 20
+  //   }
+  //   placechar('hasMainChar',currentPlayerPosition)
+  //   checkSpace(document.getElementById(currentPlayerPosition))
+  // }
+
   const checkSpace = (inputSpace) => {
-    const ghostNames = ['marty', 'willem', 'clyde', 'oscar']
+    const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
     if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
       gameOn = window.confirm(`Game over: score ${score} \n Play again?`)
     } else if (inputSpace.classList.contains('food')) {
@@ -137,8 +179,6 @@ function init () {
   }
 
   const ghostMove = (nameOfGhost,currentPlayerPosition) => {
-    
-
     const currentPosition = document.querySelector('.' + nameOfGhost)
     removechar(nameOfGhost,currentPosition.id)
     const possibleMoves = [parseFloat(currentPosition.id) - 20, parseFloat(currentPosition.id) + 1,parseFloat(currentPosition.id) - 1, parseFloat(currentPosition.id) + 20].sort()
@@ -160,7 +200,19 @@ function init () {
         }
       })
     },[])
-    placechar(nameOfGhost,nextMove[0][1])
+    let moveSelect
+    switch (currentState) {
+      case 'chase':
+        moveSelect = nextMove[0][1]
+        break
+      case 'panic':
+        moveSelect = nextMove[nextMove.length - 1][1]
+        break
+      case 'scatter':
+        moveSelect = nextMove[Math.floor(Math.random * nextMove.length - 1)][1]
+        break
+    }
+    placechar(nameOfGhost,moveSelect)
   }
 
 
@@ -170,7 +222,6 @@ function init () {
     // audio.src = inputsrc
     audio.play()
   }  
-  // document.querySelector('.startpage').addEventListener('mouseenter',playAudio('./assets/sounds/Miami.mp3'))
 }
 
 window.addEventListener('DOMContentLoaded',init)

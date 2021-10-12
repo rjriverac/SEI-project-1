@@ -103,15 +103,19 @@ h2 {
 }
 
 .willem {
+  background-image: url(../assets/visual/willem.png);
+  background-position: center;
 
 }
 
 .clyde {
-
+  background-image: url(../assets/visual/clyde.png);
+  background-position: center;
 }
 
 .rasmus {
-
+  background-image: url(../assets/visual/rasmus.png);
+  background-position: center;
 }
 
 
