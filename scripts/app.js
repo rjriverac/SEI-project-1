@@ -17,10 +17,13 @@ function init () {
   const gridArray = []
   let playerDirection = 230
   let myInterval
+  let powerUpInterval
+  let powerCounter
   let gameOn = true
   const ghostStates = ['chase','panic','scatter']
   let currentState = ghostStates[0]
   let delayFactor = 650
+  const foodArray = []
 
 
 
@@ -76,6 +79,7 @@ function init () {
       if (blanks.slice(1,5).some((item) => cell.id === item)){
         cell.classList.add('powerup')
       }
+      if (cell.classList.contains('food')) foodArray.push(cell)
     })
 
     createCoords(thegrid)
@@ -130,7 +134,6 @@ function init () {
   }
 
   const moveInterval = ()=> {
-    let counter = 0
     myInterval = setInterval(()=> {
       if (currentPlayerPosition === 199 && playerDirection === 'right') {
         removechar('hasMainChar',currentPlayerPosition)
@@ -161,17 +164,6 @@ function init () {
         placechar('hasMainChar',currentPlayerPosition)
         checkSpace(document.getElementById(currentPlayerPosition))
       }
-      if (currentState === ghostStates[1]) {
-        
-        if (counter < 40){
-          counter++
-        } else {
-          counter = 0
-          currentState = ghostStates[0]
-          if (playing === 3) switchAudio()
-          delayFactor = 650
-        }
-      } 
       getAndMoveGhosts()
     },300)
   }
@@ -186,10 +178,10 @@ function init () {
     const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
 
     if (inputSpace.classList.contains('powerup')){
-      currentState = ghostStates[1]
+      powerUpHandler()
       inputSpace.classList.remove('powerup')
       if (playing === 1) switchAudio()
-      delayFactor = 850
+      delayFactor = 950
       score += 100
     } else if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
       if (currentState === ghostStates[1]) {
@@ -211,19 +203,26 @@ function init () {
           }
           gridArray.splice(0,gridArray.length)
           cells.length = 0
+          foodArray.length = 0
           score = 0
           createGrid(height * width)
           switchAudio()
         }
       }
-    } else if (inputSpace.classList.contains('food')) {
+    } else if (inputSpace.classList.contains('food') && (foodArray.length > 0)) {
       inputSpace.classList.remove('food')
+      console.log('foodArray before',foodArray.length)
+      foodArray.splice(foodArray.indexOf(inputSpace),1)
+      console.log('foodArray after',foodArray.length)
       score += 100
+    } else if (foodArray.length === 0){
+      window.alert('You Win!')
     }
   }
 
   const ghostMove = (nameOfGhost,currentPlayerPosition) => {
     const currentPosition = document.querySelector('.' + nameOfGhost)
+
     removechar(nameOfGhost,currentPosition.id)
     const possibleMoves = [parseFloat(currentPosition.id) - 20, parseFloat(currentPosition.id) + 1,parseFloat(currentPosition.id) - 1, parseFloat(currentPosition.id) + 20].sort()
     const realMoves = possibleMoves.filter((item) => {
@@ -255,10 +254,32 @@ function init () {
       case 'scatter':
         moveSelect = nextMove[Math.floor(Math.random() * nextMove.length)][1]
         break
+      default:
+        moveSelect = currentPosition
     }
     placechar(nameOfGhost,moveSelect)
+    
   }
 
+  const powerUpHandler = () => {
+    currentState = ghostStates[1]
+    clearInterval(powerUpInterval)
+    powerCounter = 0
+    powerUpInterval = setInterval(() => {
+      if (powerCounter < 20) {
+        powerCounter++
+      } else {
+        powerCounter = 0
+        clearInterval(powerUpInterval)
+        currentState = ghostStates[0]
+        if (playing === 3) switchAudio()
+        delayFactor = 650
+      }
+
+
+    },1000)
+  }
+  
 
   startbutton.addEventListener('click',initiate)
 
