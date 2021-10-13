@@ -20,7 +20,7 @@ function init () {
   let gameOn = true
   const ghostStates = ['chase','panic','scatter']
   let currentState = ghostStates[0]
-  let delayFactor = 500
+  let delayFactor = 650
 
 
 
@@ -169,7 +169,7 @@ function init () {
           counter = 0
           currentState = ghostStates[0]
           if (playing === 3) switchAudio()
-          delayFactor = 500
+          delayFactor = 650
         }
       } 
       getAndMoveGhosts()
@@ -189,7 +189,7 @@ function init () {
       currentState = ghostStates[1]
       inputSpace.classList.remove('powerup')
       if (playing === 1) switchAudio()
-      delayFactor = 750
+      delayFactor = 850
       score += 100
     } else if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
       if (currentState === ghostStates[1]) {
