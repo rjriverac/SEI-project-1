@@ -3,7 +3,9 @@ function init () {
   const thegrid = document.querySelector('#grid')
   let height = 0
   let width = 0
-  const audio = document.querySelector('audio')
+  const audio1 = document.getElementById('song1')
+  const audio2 = document.getElementById('song2')
+  const audio3 = document.getElementById('song3')
   // let numCells = height * width
   const cells = []
   // let level = 0
@@ -18,7 +20,8 @@ function init () {
   let gameOn = true
   const ghostStates = ['chase','panic','scatter']
   let currentState = ghostStates[0]
-  let delayFactor = 400
+  let delayFactor = 500
+
 
 
   const initiate = () => {
@@ -30,7 +33,7 @@ function init () {
     document.querySelector('.game').style.flexDirection = 'column'
     document.querySelector('body').style.backgroundColor = '#261447'
     createGrid(height * width)
-    playAudio('./assets/sounds/hydrogen.mp3')
+    switchAudio()
   }
   const createGrid = (numCells) => {
     for (let i = 0; i < numCells; i++) {
@@ -77,10 +80,13 @@ function init () {
 
     createCoords(thegrid)
     placechar('hasMainChar',currentPlayerPosition)
-    placechar('marty', 24)
-    placechar('willem',35)
-    placechar('clyde',378)
-    placechar('rasmus',361)
+    setTimeout(()=> placechar('marty', 24),1000) 
+    setTimeout(()=> placechar('willem', 35),1000) 
+    setTimeout(()=> placechar('clyde', 378),1000) 
+    setTimeout(()=> placechar('rasmus', 361),1000) 
+    // placechar('willem',35)
+    // placechar('clyde',378)
+    // placechar('rasmus',361)
 
 
     window.addEventListener('keydown',setDirection)
@@ -162,7 +168,8 @@ function init () {
         } else {
           counter = 0
           currentState = ghostStates[0]
-          delayFactor = 400
+          if (playing === 3) switchAudio()
+          delayFactor = 500
         }
       } 
       getAndMoveGhosts()
@@ -180,7 +187,10 @@ function init () {
 
     if (inputSpace.classList.contains('powerup')){
       currentState = ghostStates[1]
-      delayFactor = 650
+      inputSpace.classList.remove('powerup')
+      if (playing === 1) switchAudio()
+      delayFactor = 750
+      score += 100
     } else if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
       if (currentState === ghostStates[1]) {
         const thisGhost = ghostNames.filter(name => inputSpace.classList.contains(name)).join('')
@@ -188,14 +198,22 @@ function init () {
         score += 500
         setTimeout(()=> placechar(thisGhost,169),10000)
       } else {
+        playing = 2
+        switchAudio()
         clearInterval(myInterval)
         removechar('hasMainChar',currentPlayerPosition)
         gameOn = !window.confirm(`Game over: score ${score} \n Play again?`)
         while (!gameOn) {
           gameOn = true
           currentPlayerPosition = 229
-          cells.map((cell) => cell.classList = '')
-          createLevel()
+          while (thegrid.firstChild) {
+            thegrid.removeChild(thegrid.lastChild)
+          }
+          gridArray.splice(0,gridArray.length)
+          cells.length = 0
+          score = 0
+          createGrid(height * width)
+          switchAudio()
         }
       }
     } else if (inputSpace.classList.contains('food')) {
@@ -209,7 +227,7 @@ function init () {
     removechar(nameOfGhost,currentPosition.id)
     const possibleMoves = [parseFloat(currentPosition.id) - 20, parseFloat(currentPosition.id) + 1,parseFloat(currentPosition.id) - 1, parseFloat(currentPosition.id) + 20].sort()
     const realMoves = possibleMoves.filter((item) => {
-      return document.getElementById(item).classList.contains('notwall')
+      return document.getElementById(item).classList.contains('notwall') && !['marty','willem','clyde','rasmus'].some(thing => document.getElementById(item).classList.contains(thing))
     })
     const nextMove = realMoves.reduce((acc,num) => {
       const x1 = gridArray[num][0]
@@ -244,10 +262,29 @@ function init () {
 
   startbutton.addEventListener('click',initiate)
 
-  const playAudio = (inputsrc) => {
-    // audio.src = inputsrc
-    audio.play()
-  }  
+  let playing = 0
+
+  const switchAudio = () => {
+    if (playing === 0) {
+      audio1.play()
+      audio2.pause()
+      audio3.pause()
+      playing = 1
+    } else if (playing === 1) {
+      audio1.pause()
+      audio3.play()
+      audio2.pause()
+      playing = 3
+    } else if (playing === 3) {
+      audio3.pause()
+      audio1.play()
+      playing = 1
+    } else if (playing === 2) {
+      audio1.pause()
+      audio2.play()
+      playing = 0
+    }
+  }
 }
 
 window.addEventListener('DOMContentLoaded',init)
