@@ -24,6 +24,21 @@ function init () {
   let currentState = ghostStates[0]
   let delayFactor = 650
   const foodArray = []
+  let stateSwap
+  let stateCounter
+
+  const stateHandler = () => {
+    stateCounter = 0
+    stateSwap = setInterval(()=> {
+      const choices = ghostStates.filter(item => item !== 'panic')
+      if (stateCounter < 12) {
+        stateCounter++
+      } else {
+        currentState = choices[Math.floor(Math.random() * choices.length)]
+        stateCounter = 0
+      }
+    },1000)
+  }
 
 
 
@@ -88,9 +103,6 @@ function init () {
     setTimeout(()=> placechar('willem', 35),1000) 
     setTimeout(()=> placechar('clyde', 378),1000) 
     setTimeout(()=> placechar('rasmus', 361),1000) 
-    // placechar('willem',35)
-    // placechar('clyde',378)
-    // placechar('rasmus',361)
 
 
     window.addEventListener('keydown',setDirection)
@@ -166,17 +178,23 @@ function init () {
       }
       getAndMoveGhosts()
     },300)
+    stateHandler()
   }
 
   const getAndMoveGhosts = () => {
-    const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
+    const ghostNames = ['marty','willem','rasmus','clyde']
     ghostNames.forEach((name) => setTimeout(() => ghostMove(name,currentPlayerPosition),delayFactor))
   }
 
+  // const removeAndReplaceGhost = (which,position) => {
+  //   const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
+  //   cells[position].classList.remove(which)
+  //   console.log(which)
+  //   setTimeout(() => placechar(which,169),10000)
+  // }
 
   const checkSpace = (inputSpace) => {
-    const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
-
+    const ghostNames = ['marty','willem','clyde','rasmus']
     if (inputSpace.classList.contains('powerup')){
       powerUpHandler()
       inputSpace.classList.remove('powerup')
@@ -187,8 +205,9 @@ function init () {
       if (currentState === ghostStates[1]) {
         const thisGhost = ghostNames.filter(name => inputSpace.classList.contains(name)).join('')
         removechar(thisGhost,currentPlayerPosition)
+        // removeAndReplaceGhost(thisGhost,currentPlayerPosition)
         score += 500
-        setTimeout(()=> placechar(thisGhost,169),10000)
+        setTimeout(() => placechar(thisGhost,169),10000)
       } else {
         playing = 2
         switchAudio()
@@ -211,9 +230,7 @@ function init () {
       }
     } else if (inputSpace.classList.contains('food') && (foodArray.length > 0)) {
       inputSpace.classList.remove('food')
-      console.log('foodArray before',foodArray.length)
       foodArray.splice(foodArray.indexOf(inputSpace),1)
-      console.log('foodArray after',foodArray.length)
       score += 100
     } else if (foodArray.length === 0){
       window.alert('You Win!')
@@ -258,15 +275,16 @@ function init () {
         moveSelect = currentPosition
     }
     placechar(nameOfGhost,moveSelect)
-    
+  
   }
 
   const powerUpHandler = () => {
     currentState = ghostStates[1]
     clearInterval(powerUpInterval)
+    clearInterval(stateSwap)
     powerCounter = 0
     powerUpInterval = setInterval(() => {
-      if (powerCounter < 20) {
+      if (powerCounter < 12) {
         powerCounter++
       } else {
         powerCounter = 0
@@ -274,9 +292,8 @@ function init () {
         currentState = ghostStates[0]
         if (playing === 3) switchAudio()
         delayFactor = 650
+        stateHandler()
       }
-
-
     },1000)
   }
   
