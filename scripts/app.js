@@ -191,20 +191,28 @@ function init () {
 
   
   const replaceGhost = () => {
-    let counter
+    let counter = 0
     replaceInterval = setInterval(() => {
       if (counter < 20) {
-        counter++
-      } else if (removedGhosts.length > 0) {
+        counter ++
+      } else {
         counter = 0
-        clearInterval(replaceInterval)
-        const currGhost = removedGhosts[0]
-        placechar(currGhost,168)
-        activeGhosts.push(removedGhosts.splice(0,1).join(''))
+        if (removedGhosts.length > 0) {
+          const currGhost = removedGhosts[0]
+          placechar(currGhost,168)
+          activeGhosts.push(removedGhosts.shift())
+        } else clearInterval(replaceInterval)
       }
     },500)
-  
+    // const tempArray = removedGhosts.slice()
+    // for (let i = 0; i < tempArray.length; i++) {
+    //   const currGhost = tempArray[i]
+    //   const iterator = i + 1
+    //   activeGhosts.push(removedGhosts.shift())
+    //   setTimeout(() => placechar(currGhost,168),iterator * 5000)
+    // }
   }
+  
 
   const checkSpace = (inputSpace) => {
     const ghostNames = activeGhosts.slice()
