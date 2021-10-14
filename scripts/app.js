@@ -25,6 +25,7 @@ function init () {
   let delayFactor = 650
   const foodArray = []
   let stateSwap
+  let replaceInterval
   let stateCounter = 0
   const activeGhosts = ['marty','willem','rasmus','clyde']
   const removedGhosts = []
@@ -184,19 +185,29 @@ function init () {
   }
 
   const getAndMoveGhosts = () => {
-    // const ghostNames = ['marty','willem','rasmus','clyde']
+    const ghostNames = activeGhosts.slice()
     ghostNames.forEach((name) => setTimeout(() => ghostMove(name,currentPlayerPosition),delayFactor))
   }
 
-  // const removeAndReplaceGhost = (which,position) => {
-  //   const ghostNames = ['marty', 'willem', 'clyde', 'rasmus']
-  //   cells[position].classList.remove(which)
-  //   console.log(which)
-  //   setTimeout(() => placechar(which,169),10000)
-  // }
+  
+  const replaceGhost = () => {
+    let counter
+    replaceInterval = setInterval(() => {
+      if (counter < 20) {
+        counter++
+      } else if (removedGhosts.length > 0) {
+        counter = 0
+        clearInterval(replaceInterval)
+        const currGhost = removedGhosts[0]
+        placechar(currGhost,168)
+        activeGhosts.push(removedGhosts.splice(0,1).join(''))
+      }
+    },500)
+  
+  }
 
   const checkSpace = (inputSpace) => {
-    const ghostNames = ['marty','willem','clyde','rasmus']
+    const ghostNames = activeGhosts.slice()
     if (inputSpace.classList.contains('powerup')){
       powerUpHandler()
       inputSpace.classList.remove('powerup')
@@ -206,10 +217,11 @@ function init () {
     } else if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
       if (currentState === ghostStates[1]) {
         const thisGhost = ghostNames.filter(name => inputSpace.classList.contains(name)).join('')
+        activeGhosts.splice(activeGhosts.findIndex((i) => i === thisGhost),1)
+        removedGhosts.push(thisGhost)
         removechar(thisGhost,currentPlayerPosition)
-        // removeAndReplaceGhost(thisGhost,currentPlayerPosition)
+        replaceGhost()
         score += 500
-        setTimeout(() => placechar(thisGhost,169),10000)
       } else {
         playing = 2
         switchAudio()
