@@ -25,12 +25,16 @@ function init () {
   let delayFactor = 650
   const foodArray = []
   let stateSwap
-  let stateCounter
+  let stateCounter = 0
+  const activeGhosts = ['marty','willem','rasmus','clyde']
+  const removedGhosts = []
+
 
   const stateHandler = () => {
     stateCounter = 0
-    stateSwap = setInterval(()=> {
-      const choices = ghostStates.filter(item => item !== 'panic')
+    const choices = ghostStates.filter(item => item !== 'panic')
+    stateSwap = setInterval(() => {
+      console.log(currentState)
       if (stateCounter < 12) {
         stateCounter++
       } else {
@@ -60,7 +64,6 @@ function init () {
       cells.push(cell)
       cell.id = i
     }
-    // level++
     createLevel()
   }
 
@@ -177,12 +180,12 @@ function init () {
         checkSpace(document.getElementById(currentPlayerPosition))
       }
       getAndMoveGhosts()
-    },300)
+    },400)
     stateHandler()
   }
 
   const getAndMoveGhosts = () => {
-    const ghostNames = ['marty','willem','rasmus','clyde']
+    // const ghostNames = ['marty','willem','rasmus','clyde']
     ghostNames.forEach((name) => setTimeout(() => ghostMove(name,currentPlayerPosition),delayFactor))
   }
 
