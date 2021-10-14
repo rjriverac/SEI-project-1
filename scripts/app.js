@@ -237,7 +237,7 @@ function init () {
         switchAudio()
         clearInterval(myInterval)
         removechar('hasMainChar',currentPlayerPosition)
-        gameOn = !window.confirm(`Game over: score ${score} \n Play again?}`)
+        gameOn = !window.confirm(`Game over: score ${score} \n Play again?`)
         while (!gameOn) {
           gameOn = true
           currentPlayerPosition = 229

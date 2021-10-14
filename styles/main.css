@@ -96,32 +96,36 @@ h2 {
 }
 
 .hasMainChar {
-  background-image: url(../assets/visual/mainchar.png);
+  background-image: url(../assets/visual/Richard.png);
   background-position: center;
+  animation: pulse .5s ease-in-out infinite;
 }
 
 /*might be best to change image to facing left/right/down/up rather than rotate OR z-index & transform */
 
 
 .marty {
-  background-image: url(../assets/visual/marty.png);
+  background-image: url(../assets/visual/Zack.png);
   background-position: center;
+  animation: pulse .5s ease-in-out infinite;
 }
 
 .willem {
-  background-image: url(../assets/visual/willem.png);
+  background-image: url(../assets/visual/Charlie.png);
   background-position: center;
-
+  animation: pulse .5s ease-in-out infinite;
 }
 
 .clyde {
-  background-image: url(../assets/visual/clyde.png);
+  background-image: url(../assets/visual/Tony.png);
   background-position: center;
+  animation: pulse .5s ease-in-out infinite;
 }
 
 .rasmus {
   background-image: url(../assets/visual/rasmus.png);
   background-position: center;
+  animation: pulse .5s ease-in-out infinite;
 }
 
 
@@ -145,4 +149,19 @@ h2 {
 
 .notwall {
   background-color: #023788;
+}
+
+@keyframes pulse {
+  0% {
+    background-size: contain;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    background-size: 110%;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.99);
+  }
+  100% {
+    background-size: contain;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.2);
+  }
 }
