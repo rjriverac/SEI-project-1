@@ -1,3 +1,5 @@
+//! Need to make loop to compare arrays and re-add ghosts if they disappear
+
 function init () {
 
   const thegrid = document.querySelector('#grid')
@@ -115,9 +117,11 @@ function init () {
     setTimeout(moveInterval,5000)
   }
 
+
   let animationInterval
   const animationLoop = () => {
-    const checkCells = foodArray.slice()
+    const checkCells = cells.slice()
+    ghostErrorCorrection()
     animationInterval = setInterval(() => {
       checkCells.map((cell) => {
         if (activeGhosts.some((ghost) => !cell.classList.contains(ghost) || !cell.classList.contains('hasMainChar')) && cell.classList.contains('pulseOn')) {
@@ -128,7 +132,18 @@ function init () {
       })
     },500)
   }
-
+  let ghostCountInterval
+  const ghostErrorCorrection = () => {
+    const boardGhosts = reserveGhosts.slice()
+    ghostCountInterval = setInterval(() => {
+      const currentGhosts = activeGhosts.concat(removedGhosts)
+      if (currentGhosts.length !== boardGhosts.length) {
+        const missing = boardGhosts.filter((ghost) => !currentGhosts.includes(ghost))
+        placechar(missing.join(''),168)
+        activeGhosts.push(missing.join(''))
+      }
+    }, 500)
+  }
 
   const createCoords = () => {
     for (let i = 0; i <= cells.length; i++) {
@@ -275,6 +290,7 @@ function init () {
         clearInterval(myInterval)
         clearInterval(ghostMoveInterval)
         clearInterval(animationInterval)
+        clearInterval(ghostCountInterval)
         removechar('hasMainChar',currentPlayerPosition)
         gameOn = !window.confirm(`Game over: score ${score} \n Play again?`)
         while (!gameOn) {
@@ -297,15 +313,33 @@ function init () {
       foodArray.splice(foodArray.indexOf(inputSpace),1)
       score += 100
     } else if (foodArray.length === 0){
-      window.alert('You Win!')
-
-      
+      playing = 2
+      switchAudio()
+      clearInterval(myInterval)
+      clearInterval(ghostMoveInterval)
+      clearInterval(animationInterval)
+      clearInterval(ghostCountInterval)
+      gameOn = !window.confirm('You win! \n Play again?')
+      while (!gameOn) {
+        
+        gameOn = true
+        currentPlayerPosition = 229
+        while (thegrid.firstChild) {
+          thegrid.removeChild(thegrid.lastChild)
+        }
+        clearInterval(ghostMoveInterval)
+        gridArray.splice(0,gridArray.length)
+        cells.length = 0
+        foodArray.length = 0
+        score = 0
+        createGrid(height * width)
+        switchAudio()
+      }
     }
   }
 
   const ghostMove = (nameOfGhost,currentPlayerPosition) => {
     const currentPosition = document.querySelector('.' + nameOfGhost)
-
     removechar(nameOfGhost,currentPosition.id)
     const possibleMoves = [parseFloat(currentPosition.id) - 20, parseFloat(currentPosition.id) + 1,parseFloat(currentPosition.id) - 1, parseFloat(currentPosition.id) + 20].sort()
     const realMoves = possibleMoves.filter((item) => {
@@ -327,18 +361,29 @@ function init () {
       })
     },[])
     let moveSelect
-    switch (currentState) {
-      case 'chase':
+    // switch (currentState) {
+    //   case 'chase':
+    //     moveSelect = nextMove[0][1]
+    //     break
+    //   case 'panic':
+    //     moveSelect = nextMove[nextMove.length - 1][1]
+    //     break
+    //   case 'scatter':
+    //     moveSelect = nextMove[Math.floor(Math.random() * nextMove.length)][1]
+    //     break
+    //   default:
+    //     moveSelect = currentPosition
+    // }
+    if (nextMove.length < 1) {
+      moveSelect = currentPosition
+    } else {
+      if (currentState === 'chase') {
         moveSelect = nextMove[0][1]
-        break
-      case 'panic':
+      } else if (currentState === 'panic') {
         moveSelect = nextMove[nextMove.length - 1][1]
-        break
-      case 'scatter':
+      } else if (currentState === 'scatter') {
         moveSelect = nextMove[Math.floor(Math.random() * nextMove.length)][1]
-        break
-      default:
-        moveSelect = currentPosition
+      }
     }
     placechar(nameOfGhost,moveSelect)
   
