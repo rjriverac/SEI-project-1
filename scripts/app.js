@@ -31,11 +31,13 @@ function init () {
   const removedGhosts = []
 
 
+
+
   const stateHandler = () => {
     stateCounter = 0
     const choices = ghostStates.filter(item => item !== 'panic')
     stateSwap = setInterval(() => {
-      if (stateCounter < 12) {
+      if (stateCounter < 15) {
         stateCounter++
       } else {
         currentState = choices[Math.floor(Math.random() * choices.length)]
@@ -235,7 +237,7 @@ function init () {
         switchAudio()
         clearInterval(myInterval)
         removechar('hasMainChar',currentPlayerPosition)
-        gameOn = !window.confirm(`Game over: score ${score} \n Play again?`)
+        gameOn = !window.confirm(`Game over: score ${score} \n Play again?}`)
         while (!gameOn) {
           gameOn = true
           currentPlayerPosition = 229
