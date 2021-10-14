@@ -1,5 +1,3 @@
-//! Need to make loop to compare arrays and re-add ghosts if they disappear
-
 function init () {
 
   const thegrid = document.querySelector('#grid')
@@ -10,7 +8,6 @@ function init () {
   const audio3 = document.getElementById('song3')
   // let numCells = height * width
   const cells = []
-  // let level = 0
   const levelOne = [42,43,62,63,47,46,67,66,56,57,76,77,52,53,72,73,45,65,54,74,29,30,49,50,69,70,102,103,141,161,142,143,162,163,105,125,145,165,117,116,114,134,154,174,156,157,158,176,177,178,107,108,109,110,111,112,129,130,149,150,146,147,166,167,152,153,172,173]
   const startscreen = document.querySelector('.startpage')
   const startbutton = document.querySelector('#start p')
@@ -258,13 +255,6 @@ function init () {
         } else clearInterval(replaceInterval)
       }
     },500)
-    // const tempArray = removedGhosts.slice()
-    // for (let i = 0; i < tempArray.length; i++) {
-    //   const currGhost = tempArray[i]
-    //   const iterator = i + 1
-    //   activeGhosts.push(removedGhosts.shift())
-    //   setTimeout(() => placechar(currGhost,168),iterator * 5000)
-    // }
   }
   
 
@@ -361,19 +351,6 @@ function init () {
       })
     },[])
     let moveSelect
-    // switch (currentState) {
-    //   case 'chase':
-    //     moveSelect = nextMove[0][1]
-    //     break
-    //   case 'panic':
-    //     moveSelect = nextMove[nextMove.length - 1][1]
-    //     break
-    //   case 'scatter':
-    //     moveSelect = nextMove[Math.floor(Math.random() * nextMove.length)][1]
-    //     break
-    //   default:
-    //     moveSelect = currentPosition
-    // }
     if (nextMove.length < 1) {
       moveSelect = currentPosition
     } else {
