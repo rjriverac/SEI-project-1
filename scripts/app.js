@@ -34,7 +34,6 @@ function init () {
     stateCounter = 0
     const choices = ghostStates.filter(item => item !== 'panic')
     stateSwap = setInterval(() => {
-      console.log(currentState)
       if (stateCounter < 12) {
         stateCounter++
       } else {
