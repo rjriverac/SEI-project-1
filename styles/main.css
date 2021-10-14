@@ -52,6 +52,7 @@ h2 {
   font-size: 60px;
   color: #f9c80e;
   text-shadow: rgba(253, 55, 119, 0.5);
+  padding: 20px 0 20px 0;
   
 }
 
@@ -66,7 +67,8 @@ h2 {
   color: #2de2e6;
   margin: 0 auto;
   padding: 10px;
-  font-family: 'djGross', san;
+  font-size: 20px;
+  font-family: 'djGross', sans-serif;
 }
 #start p:hover {
   cursor: pointer;
@@ -107,27 +109,30 @@ h2 {
 .marty {
   background-image: url(../assets/visual/Zack.png);
   background-position: center;
-  animation: pulse .5s ease-in-out infinite;
 }
 
 .willem {
   background-image: url(../assets/visual/Charlie.png);
   background-position: center;
-  animation: pulse .5s ease-in-out infinite;
 }
 
 .clyde {
   background-image: url(../assets/visual/Tony.png);
   background-position: center;
-  animation: pulse .5s ease-in-out infinite;
 }
 
 .rasmus {
   background-image: url(../assets/visual/rasmus.png);
   background-position: center;
+}
+
+.pulseOn {
   animation: pulse .5s ease-in-out infinite;
 }
 
+.flashOn {
+  animation: flash .5s ease-in-out infinite;
+}
 
 .game{
   display: none;
@@ -163,5 +168,26 @@ h2 {
   100% {
     background-size: contain;
     box-shadow: 0 0 14px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0.1turn);
+  }
+  to {
+    transform: rotate(.99turn);
+  }
+}
+
+@keyframes flash {
+  0% {
+    opacity: .1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .1;
   }
 }

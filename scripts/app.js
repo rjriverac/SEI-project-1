@@ -22,12 +22,13 @@ function init () {
   let gameOn = true
   const ghostStates = ['chase','panic','scatter']
   let currentState = ghostStates[0]
-  let delayFactor = 650
+  let delayFactor = 400
   const foodArray = []
   let stateSwap
   let replaceInterval
   let stateCounter = 0
-  const activeGhosts = ['marty','willem','rasmus','clyde']
+  const reserveGhosts = ['marty','willem','rasmus','clyde'] 
+  const activeGhosts = reserveGhosts.slice()
   const removedGhosts = []
 
 
@@ -114,6 +115,20 @@ function init () {
     setTimeout(moveInterval,5000)
   }
 
+  let animationInterval
+  const animationLoop = () => {
+    const checkCells = foodArray.slice()
+    animationInterval = setInterval(() => {
+      checkCells.map((cell) => {
+        if (activeGhosts.some((ghost) => !cell.classList.contains(ghost) || !cell.classList.contains('hasMainChar')) && cell.classList.contains('pulseOn')) {
+          cell.classList.remove('pulseOn')
+        } else if (activeGhosts.some((ghost) => !cell.classList.contains(ghost) || !cell.classList.contains('hasMainChar')) && cell.classList.contains('flashOn')) {
+          cell.classList.remove('flashOn')
+        }
+      })
+    },500)
+  }
+
 
   const createCoords = () => {
     for (let i = 0; i <= cells.length; i++) {
@@ -125,10 +140,22 @@ function init () {
 
 
   const placechar = (which,position) => {
+    
+    if (currentState === ghostStates[1]){
+      cells[position].classList.add('flashOn')
+    } else {
+      cells[position].classList.add('pulseOn')
+    }
     cells[position].classList.add(which)
   }
 
   const removechar = (which,position) => {
+    
+    if (currentState === ghostStates[1]) {
+      cells[position].classList.remove('flashOn')
+    } else {
+      cells[position].classList.remove('pulseOn')
+    }
     cells[position].classList.remove(which)
   }
 
@@ -181,14 +208,24 @@ function init () {
         placechar('hasMainChar',currentPlayerPosition)
         checkSpace(document.getElementById(currentPlayerPosition))
       }
-      getAndMoveGhosts()
+      
     },400)
     stateHandler()
+    getAndMoveGhosts()
+    animationLoop()
   }
-
+  let ghostMoveInterval
   const getAndMoveGhosts = () => {
-    const ghostNames = activeGhosts.slice()
-    ghostNames.forEach((name) => setTimeout(() => ghostMove(name,currentPlayerPosition),delayFactor))
+    let counter = 0
+    ghostMoveInterval = setInterval(() => {
+      const ghostNames = activeGhosts.slice()
+      if (counter < 10) {
+        counter++
+      } else {
+        counter = 0
+        ghostNames.forEach((name) => ghostMove(name,currentPlayerPosition))
+      }
+    },(delayFactor / 10))
   }
 
   
@@ -222,7 +259,7 @@ function init () {
       powerUpHandler()
       inputSpace.classList.remove('powerup')
       if (playing === 1) switchAudio()
-      delayFactor = 950
+      delayFactor = 450
       score += 100
     } else if (ghostNames.some(ghostname => inputSpace.classList.contains(ghostname))) {
       if (currentState === ghostStates[1]) {
@@ -236,6 +273,8 @@ function init () {
         playing = 2
         switchAudio()
         clearInterval(myInterval)
+        clearInterval(ghostMoveInterval)
+        clearInterval(animationInterval)
         removechar('hasMainChar',currentPlayerPosition)
         gameOn = !window.confirm(`Game over: score ${score} \n Play again?`)
         while (!gameOn) {
@@ -244,6 +283,7 @@ function init () {
           while (thegrid.firstChild) {
             thegrid.removeChild(thegrid.lastChild)
           }
+          clearInterval(ghostMoveInterval)
           gridArray.splice(0,gridArray.length)
           cells.length = 0
           foodArray.length = 0
@@ -258,6 +298,8 @@ function init () {
       score += 100
     } else if (foodArray.length === 0){
       window.alert('You Win!')
+
+      
     }
   }
 
@@ -315,7 +357,7 @@ function init () {
         clearInterval(powerUpInterval)
         currentState = ghostStates[0]
         if (playing === 3) switchAudio()
-        delayFactor = 650
+        delayFactor = 400
         stateHandler()
       }
     },1000)
