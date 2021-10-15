@@ -40,7 +40,7 @@ function init () {
     stateSwap = setInterval(() => {
       if (stateCounter < 7) {
         stateCounter++
-      } else {
+      } else if (currentState !== ghostStates[1]) {
         currentState = choices[Math.floor(Math.random() * choices.length)]
         stateCounter = 0
       }
