@@ -29,7 +29,8 @@ function init () {
   const reserveGhosts = ['marty','willem','rasmus','clyde'] 
   const activeGhosts = reserveGhosts.slice()
   const removedGhosts = []
-
+  const highscoreElement = document.querySelector('span')
+  let storedScore = sessionStorage.getItem('highscore')
 
 
 
@@ -276,6 +277,11 @@ function init () {
         score += 500
       } else {
         playing = 2
+        if (storedScore < score) {
+          storedScore = score
+          localStorage.setItem('highscore', storedScore)
+        }
+        highscoreElement.innerText = storedScore
         switchAudio()
         clearInterval(myInterval)
         clearInterval(ghostMoveInterval)
@@ -304,6 +310,11 @@ function init () {
       score += 100
     } else if (foodArray.length === 0){
       playing = 2
+      if (storedScore < score) {
+        storedScore = score
+        localStorage.setItem('highscore', storedScore)
+      }
+      highscoreElement.innerText = storedScore
       switchAudio()
       clearInterval(myInterval)
       clearInterval(ghostMoveInterval)

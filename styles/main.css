@@ -56,6 +56,10 @@ h2 {
   
 }
 
+#displayScore {
+  font-family: djGross;
+}
+
 #start {
   height: 30px;
   width: 300px;
@@ -127,11 +131,11 @@ h2 {
 }
 
 .pulseOn {
-  animation: pulse .5s ease-in-out infinite;
+  animation: pulse .3s ease-in-out infinite;
 }
 
 .flashOn {
-  animation: flash .5s ease-in-out infinite;
+  animation: flash .3s ease-in-out infinite;
 }
 
 .game{
