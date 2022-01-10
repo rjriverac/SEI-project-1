@@ -2,6 +2,8 @@
 
 ## Overview
 
+![](hotline.gif)
+
 A Hotline Miami themed implementation of Pac-Man, playable [here](https://rjriverac.github.io/SEI-project-1/). This was my first project as a GA student, created over 8 days, after 3 weeks in the course.
 
 ---
