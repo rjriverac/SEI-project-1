@@ -2,7 +2,7 @@
 
 ## Overview
 
-![](hotline.gif)
+![](pacIntro.gif)
 
 A Hotline Miami themed implementation of Pac-Man, playable [here](https://rjriverac.github.io/SEI-project-1/). This was my first project as a GA student, created over 8 days, after 3 weeks in the course.
 
@@ -157,6 +157,9 @@ const nextMove = realMoves.reduce((acc,num) => {
      }
    }
 ```
+
+![](pacgameplay.gif)
+
 With movement squared away, the remaining problem was handling both scoring and what happens when a player encounters a ghost, and as a result this check space function ended up becoming a catch all for everything that wasn’t movement related that needed to happen to make the game work. It was called every time the player moved, and would check if the space the player was moving into contained a ghost, powerup, score, and then perform some action based on those conditions. While initially this meant just increasing the score and removing the food div from a square, or losing the game if a player ran into the ghost, as I added powerups it also would call another interval to temporarily change the ghost behavior, as well as changing the music on running into a powerup, and even removing/replacing a ghost that was eaten during a powerup period. 
 
 ### Bugs
